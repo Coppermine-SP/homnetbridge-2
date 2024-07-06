@@ -1,14 +1,11 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using NetDaemon.Client.HomeAssistant.Model;
 using NetDaemon.HassModel.Entities;
 using NetDaemon.HassModel.Integration;
-using YamlDotNet.Core.Tokens;
 
 namespace CloudInteractive.HomNetBridge.apps.LightControl
 {
