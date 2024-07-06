@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using NetDaemon.HassModel.Entities;
-using PacketDotNet;
+﻿using PacketDotNet;
 
 namespace CloudInteractive.HomNetBridge.Apps.DoorState
 {
