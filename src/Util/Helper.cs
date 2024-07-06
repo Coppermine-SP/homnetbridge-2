@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Specialized;
+using System.Linq;
+using System.Web;
 
 namespace CloudInteractive.HomNetBridge.Util
 {
@@ -15,12 +17,18 @@ namespace CloudInteractive.HomNetBridge.Util
                 .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
                 .ToArray();
         }
+
         public static bool CompareBoolArray(bool[] lhs, bool[] rhs)
         {
             if (lhs.Length != rhs.Length) return false;
 
             for (int i = 0; i < lhs.Length; i++) if (lhs[i] != rhs[i]) return false;
             return true;
+        }
+        public static string GetUrlParameter(string key, string value)
+        {
+            NameValueCollection parameters = HttpUtility.ParseQueryString(value);
+            return parameters[key];
         }
     }
 }
