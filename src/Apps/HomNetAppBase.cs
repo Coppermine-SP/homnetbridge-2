@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
-using CloudInteractive.HomNetBridge.Services;
-using CloudInteractive.HomNetBridge.Util;
 
 namespace CloudInteractive.HomNetBridge.Apps
 {
@@ -31,6 +24,13 @@ namespace CloudInteractive.HomNetBridge.Apps
             Logger.LogInformation($"App Initialization. (useSerialClient={SerialClient is not null}, useEthernetCapture={EthernetCapture is not null}, rules={RuleMethods.Length})");
 
             if (SerialClient is not null) SerialClient.ReceivedEvent += OnSerialReceived;
+            if (EthernetCapture is not null) EthernetCapture.ReceivedEvent += OnEthernetReceived;
+        }
+
+        ~HomNetAppBase(){
+            if (SerialClient is not null) SerialClient.ReceivedEvent -= OnSerialReceived;
+            if (EthernetCapture is not null) EthernetCapture.ReceivedEvent -= OnEthernetReceived;
+            Logger.LogInformation("Disposed.");
         }
 
         public void OnSerialReceived(object? sender, ISerialClient.SerialReceiveEventArgs? e)
@@ -56,6 +56,33 @@ namespace CloudInteractive.HomNetBridge.Apps
                 }
 
                 if(isCheckFailed) continue;
+                rule.Invoke(this, new object[] { e });
+            }
+        }
+
+        public void OnEthernetReceived(object? sender, IEthernetCapture.EthernetReceiveEventArgs e)
+        {
+            foreach (var rule in RuleMethods)
+            {
+                var attributes = rule.GetCustomAttributes();
+                bool isCheckFailed = false;
+
+                foreach (var x in attributes)
+                {
+                    if (x is SerialRuleAttribute)
+                    {
+                        isCheckFailed = true;
+                        break;
+                    }
+
+                    if (!((Rule)x).Check(e.Content))
+                    {
+                        isCheckFailed = true;
+                        break;
+                    }
+                }
+
+                if (isCheckFailed) continue;
                 rule.Invoke(this, new object[] { e });
             }
         }

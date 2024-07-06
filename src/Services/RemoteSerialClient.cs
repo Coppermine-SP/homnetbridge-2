@@ -1,8 +1,5 @@
 ﻿using System.Net;
-using System.Net.Http;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -125,6 +122,23 @@ namespace CloudInteractive.HomNetBridge.Services
                 _logger.LogError("Exception occurred in receive packet: " + e);
                 Disconnect();
             }
+        }
+
+        public void SendAsync(string hex)
+        {
+            if (_socket is null) return;
+            try
+            {
+                byte[] message = Helper.HexToByte(hex);
+                _socket.Send(message, 0, message.Length, SocketFlags.None);
+                _logger.LogInformation("Send => " + hex);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Exception occurred in send packet: " + e);
+                Disconnect();
+            }
+
         }
 
     }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Specialized;
 using System.Web;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using PacketDotNet;
 
 namespace CloudInteractive.HomNetBridge.Util
