@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using NetDaemon.Client.HomeAssistant.Model;
@@ -45,6 +46,7 @@ namespace CloudInteractive.HomNetBridge.apps.LightControl
         private readonly Task _requestTask;
         private readonly ConcurrentQueue<LightCallbackData> _requestQueue = new ConcurrentQueue<LightCallbackData>();
         public record LightCallbackData(int idx, bool state);
+        public record LightCallbackParameter(int idx, JsonElement state);
 
         public LightControl(IHaContext context, ILogger<LightControl> logger, ISerialClient serialClient) : base(logger, serialClient)
         {
@@ -55,7 +57,7 @@ namespace CloudInteractive.HomNetBridge.apps.LightControl
                 { 1, context.Entity("input_boolean.homnet_light_1_state") },
                 { 2, context.Entity("input_boolean.homnet_light_2_state") }
             };
-            context.RegisterServiceCallBack<LightCallbackData>("callback_light", LightCallbackEvent);
+            context.RegisterServiceCallBack<LightCallbackParameter>("callback_light", LightCallbackEvent);
             _requestTask = Task.Run(RequestTask);
         }
 
@@ -65,10 +67,22 @@ namespace CloudInteractive.HomNetBridge.apps.LightControl
             _requestTask.Wait();
         }
 
-        private void LightCallbackEvent(LightCallbackData e)
+        private void LightCallbackEvent(LightCallbackParameter e)
         {
-            Logger.LogInformation($"LightCallback from HA: {e.idx} => {e.state}");
-            _requestQueue.Enqueue(e);
+            //ISSUE: Exception in subscription -> System.InvalidOperationException: Cannot get the value of a token type 'String' as a boolean.
+            bool x;
+            try
+            {
+                x = e.state.GetBoolean();
+            }
+            catch
+            {
+                Logger.LogWarning("Invalid LightCallbackData paramater.");
+                return;
+            }
+
+            Logger.LogInformation($"LightCallback from HA: {e.idx} => {x}");
+            _requestQueue.Enqueue(new LightCallbackData(e.idx, x));
         }
 
         private void RequestTask()
