@@ -23,7 +23,7 @@ namespace CloudInteractive.HomNetBridge.Apps.DoorState
         public void DoorClosed(IEthernetCapture.EthernetReceiveEventArgs e)
         {
             Logger.LogInformation("Security sensor close event detected in HBM REPORT!");
-            SetDoorEntityState(true);
+            SetDoorEntityState(false);
         }
 
         [Protocol(ProtocolType.Udp)]
@@ -31,7 +31,7 @@ namespace CloudInteractive.HomNetBridge.Apps.DoorState
         public void DoorOpened(IEthernetCapture.EthernetReceiveEventArgs e)
         {
             Logger.LogInformation("Security sensor open event detected in HBM REPORT!");
-            SetDoorEntityState(false);
+            SetDoorEntityState(true);
         }
     }
 }
