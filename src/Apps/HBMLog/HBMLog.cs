@@ -18,7 +18,7 @@ namespace CloudInteractive.HomNetBridge.Apps.HBMLog
             const string pattern = @"[\p{C}]|\t|[ ]{5,}";
             string message = Regex.Replace(e.Content.PayloadToString(true), pattern, " ").Trim();
 
-            Logger.LogInformation(message);
+            Logger.LogDebug(message);
         }
     }
 }
