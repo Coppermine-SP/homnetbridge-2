@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Threading;
+using Microsoft.Extensions.Configuration;
 using PacketDotNet;
 
 namespace CloudInteractive.HomNetBridge.Apps.ElevatorControl
@@ -85,7 +86,7 @@ namespace CloudInteractive.HomNetBridge.Apps.ElevatorControl
                         Logger.LogInformation("FirstUpdate push.");
                         Notification.SendNotification(_context, NotifyTitle, $"엘리베이터를 호출하였습니다. 현재 {GetCurrentFloorString}{DirectionString[(int)_currentDirection]}.", Notification.NotifyLevel.TimeSensitive, NotifyTag);
                         _lastNotifyFloor = floor;
-                        _isFirstUpdate = false;
+                        _isFirstUpdate = true;
                     }
                     else
                     {
@@ -129,6 +130,7 @@ namespace CloudInteractive.HomNetBridge.Apps.ElevatorControl
                 _isFirstUpdate = true;
                 _isHeadingDest = false;
                 _isNearCalled = false;
+                _currentFloor = 0;
                 Logger.LogInformation("Elevator arrived. reset all states.");
             }
 
@@ -140,20 +142,17 @@ namespace CloudInteractive.HomNetBridge.Apps.ElevatorControl
         [UrlParameter("res")]
         public void ElevatorCall(IEthernetCapture.EthernetReceiveEventArgs e)
         {
-            if (_isCalled)
+            lock (this)
             {
-                Logger.LogWarning("Previous request have not been properly cleaned up. force cleanup.");
-                lock (this)
+                if (_isCalled)
                 {
-                    _isCalled = false;
+                    Logger.LogWarning("Previous request have not been properly cleaned up. force cleanup.");
                     _isFirstUpdate = true;
                     _isHeadingDest = false;
                     _isNearCalled = false;
+                    _currentFloor = 0;
                 }
-            }
 
-            lock (this)
-            {
                 Logger.LogInformation("Elevator Called.");
                 _isCalled = true;
             }
