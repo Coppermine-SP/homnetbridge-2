@@ -10,14 +10,16 @@ namespace CloudInteractive.HomNetBridge.Services
     {
         public event EventHandler<ISerialClient.SerialReceiveEventArgs>? ReceivedEvent;
 
-        private const int BufferSize = 1024;
+        private const int BufferSize = 512;
         private const int ReconnectWaitTime = 10;
 
         private readonly ILogger _logger;
         private readonly string _host;
         private readonly int _port;
         private Socket? _socket;
-        private byte[]? _buffer = null;
+        private readonly byte[] _recvBuffer;
+        private readonly byte[] _outBuffer;
+        private int _idx = 0;
 
         public RemoteSerialClient(ILogger<RemoteSerialClient> logger, IConfiguration config)
         {
@@ -27,6 +29,8 @@ namespace CloudInteractive.HomNetBridge.Services
             _port = section.GetValue<int>("Port");
             _logger.LogInformation($"Init.. ({_host}:{_port})");
 
+            _recvBuffer = new byte[BufferSize];
+            _outBuffer = new byte[BufferSize];
             Connect();
         }
 
@@ -39,7 +43,6 @@ namespace CloudInteractive.HomNetBridge.Services
 
             try
             {
-                _buffer = new byte[BufferSize];
                 IPAddress ip = Dns.GetHostAddresses(_host)[0];
                 IPEndPoint endpoint = new IPEndPoint(ip, _port);
 
@@ -50,7 +53,7 @@ namespace CloudInteractive.HomNetBridge.Services
                 _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
 
                 _socket.Connect(endpoint);
-                _socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceivePacket),
+                _socket.BeginReceive(_recvBuffer, 0, _recvBuffer.Length, SocketFlags.None, new AsyncCallback(ReceivePacket),
                     _socket);
             }
             catch (Exception e)
@@ -76,8 +79,6 @@ namespace CloudInteractive.HomNetBridge.Services
                 _socket.Close();
                 _socket = null;
             }
-
-            _buffer = null;
 
             _logger.LogInformation("Disconnected.");
             Task.Run(ReconnectAsync);
@@ -111,11 +112,38 @@ namespace CloudInteractive.HomNetBridge.Services
                     Disconnect();
                     return;
                 }
-                string receivedString = BitConverter.ToString(_buffer, 0, recv);
-                _logger.LogDebug("Receive => " + receivedString);
 
-                ReceivedEvent?.Invoke(this, new ISerialClient.SerialReceiveEventArgs(receivedString.Replace("-", string.Empty)));
-                asyncSocket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceivePacket), asyncSocket);
+                for (int i = 0; i < recv; i++)
+                {
+                    byte b = _recvBuffer[i];
+
+                    if (b == 0x02)
+                    {
+                        _idx = 0;
+                        _outBuffer[_idx++] = b;
+                    }
+                    else if (b == 0x03 && _idx != 0)
+                    {
+                        _outBuffer[_idx++] = b;
+                        byte[] tmp = new byte[_idx];
+                        Array.Copy(_outBuffer, tmp, _idx);
+
+                        string str = BitConverter.ToString(tmp).Replace("-", String.Empty);
+                        _logger.LogDebug("Receive => " + str);
+                        ReceivedEvent?.Invoke(this, new ISerialClient.SerialReceiveEventArgs(str));
+                    }
+                    else
+                    {
+                        if (_idx >= BufferSize)
+                        {
+                            _logger.LogWarning("Packet is too large, discard.");
+                            _idx = 0;
+                        }
+                        else if(_idx != 0) _outBuffer[_idx++] = b;
+                    }
+
+                }
+                asyncSocket.BeginReceive(_recvBuffer, 0, _recvBuffer.Length, SocketFlags.None, new AsyncCallback(ReceivePacket), asyncSocket);
             }
             catch (Exception e)
             {
