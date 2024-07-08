@@ -86,7 +86,7 @@ namespace CloudInteractive.HomNetBridge.Apps.ElevatorControl
                         Logger.LogInformation("FirstUpdate push.");
                         Notification.SendNotification(_context, NotifyTitle, $"엘리베이터를 호출하였습니다. 현재 {GetCurrentFloorString}{DirectionString[(int)_currentDirection]}.", Notification.NotifyLevel.TimeSensitive, NotifyTag);
                         _lastNotifyFloor = floor;
-                        _isFirstUpdate = true;
+                        _isFirstUpdate = false;
                     }
                     else
                     {
