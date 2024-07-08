@@ -65,6 +65,16 @@ namespace CloudInteractive.HomNetBridge.Util
     }
 
     [AttributeUsage(AttributeTargets.Method)]
+    public class LengthAttribute : Rule
+    {
+        public int Value { get; }
+        public LengthAttribute(int value) => Value = value;
+
+        public override bool Check(IPPacket x) => x.PayloadToString().Length == Value;
+        public override bool Check(string x) => x.Length == Value;
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
     public class ContainsAttribute : Rule
     {
         public string Value { get; }
