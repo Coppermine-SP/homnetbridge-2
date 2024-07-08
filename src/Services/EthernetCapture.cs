@@ -17,6 +17,13 @@ namespace CloudInteractive.HomNetBridge.Services
         }
     }
 
+    public class NullEthernetCapture : IEthernetCapture
+    {
+        public NullEthernetCapture(ILogger<NullEthernetCapture> logger) =>
+            logger.LogWarning("Using NullEthernetCapture. Use test purpose only.");
+        public event EventHandler<IEthernetCapture.EthernetReceiveEventArgs>? ReceivedEvent;
+    }
+
     public class EthernetCapture : IEthernetCapture
     {
         public event EventHandler<IEthernetCapture.EthernetReceiveEventArgs>? ReceivedEvent;
