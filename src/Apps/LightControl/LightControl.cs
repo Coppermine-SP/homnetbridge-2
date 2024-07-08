@@ -102,7 +102,8 @@ namespace CloudInteractive.HomNetBridge.apps.LightControl
 
                         Logger.LogInformation(
                             $"Light status change request => {x.idx}:{x.state} states:({_lightStatus[0]}, {_lightStatus[1]}, {_lightStatus[2]})");
-                        SerialClient?.SendAsync($"0219010A00B003{key}0{codes[0]}030219010B40B00003{codes[1]}03");
+                        SerialClient?.SendAsync($"0219010A00B003{key}0{codes[0]}03");
+                        //SerialClient?.SendAsync($"0219010B40B00003{codes[1]}03");
                     }
                 }
                 Thread.Sleep(100);
