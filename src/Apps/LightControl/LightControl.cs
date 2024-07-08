@@ -111,21 +111,22 @@ namespace CloudInteractive.HomNetBridge.apps.LightControl
 
         }
 
-        [StartsWith("0219010800C23D030219010D40C2000003")]
+        [StartsWith("0219010D40C2000003")]
+        [Length(26)]
         private void LightStatusUpdate(ISerialClient.SerialReceiveEventArgs e)
         {
             lock (this)
             {
-                if (!receiveCodeTable.TryGetValue(e.Content[34], out var value))
+                if (!receiveCodeTable.TryGetValue(e.Content[18], out var value))
                 {
-                    Logger.LogWarning("Invalid light status code :" + e.Content[34]);
+                    Logger.LogWarning("Invalid light status code :" + e.Content[18]);
                     return;
                 }
 
                 if (!_isUpdated || !Helper.CompareBoolArray(value, _lightStatus))
                 {
                     Logger.LogInformation(
-                        $"Light status update => {e.Content[34]} ({value[0]}, {value[1]}, {value[2]})");
+                        $"Light status update => {e.Content[18]} ({value[0]}, {value[1]}, {value[2]})");
 
                     _lightStatus = (bool[])value.Clone();
 
