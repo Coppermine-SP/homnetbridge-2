@@ -7,7 +7,7 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY . ./
-RUN dotnet publish -c Release -o out ./homnetbridge_2.csproj
+RUN dotnet publish -c Release -o out ./CloudInteractive.HomNetBridge.csproj
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
