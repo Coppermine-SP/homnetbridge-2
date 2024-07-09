@@ -10,7 +10,7 @@ COPY . ./
 RUN dotnet publish -c Release -o out ./CloudInteractive.HomNetBridge.csproj
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "homnetbridge_2.dll"]
+ENTRYPOINT ["dotnet", "HomNetBridge_2.dll"]
