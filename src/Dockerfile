@@ -9,6 +9,10 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o out ./CloudInteractive.HomNetBridge.csproj
 
+# Install Libraries
+RUN apt update -y; exit 0
+RUN apt install -y tcpdump
+
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
