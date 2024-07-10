@@ -61,7 +61,7 @@ namespace CloudInteractive.HomNetBridge
 
             //Docker Container Environment Variable
             string? envSerial = Environment.GetEnvironmentVariable("SERIAL_CLIENT");
-            string? envEthernet = Environment.GetEnvironmentVariable("ENTERNET_CAPTURE");
+            string? envEthernet = Environment.GetEnvironmentVariable("ETHERNET_CAPTURE");
 
             if (envSerial is not null)
             {
