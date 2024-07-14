@@ -1,6 +1,9 @@
 # HomNetBridge-2
-<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"> <img src="https://img.shields.io/badge/ASP.NET-512BD4?style=for-the-badge&logo=blazor&logoColor=white">
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"> <img src="https://img.shields.io/badge/ASP.NET-512BD4?style=for-the-badge&logo=blazor&logoColor=white"> <img src="https://img.shields.io/badge/Home Assistant-18BCF2?style=for-the-badge&logo=homeassistant&logoColor=white">
 
+> [!NOTE]
+> 
+> [cloudinteractive-homnetbridge](https://github.com/Coppermine-SP/cloudinteractive-homnetbridge), [cloudinteractive-homnetbridge-serial](https://github.com/Coppermine-SP/cloudinteractive-homnetbridge-serial) 프로젝트가 통합되었습니다.
 <img src="/img/title.png">
 
 **LG HomNet 스마트 홈 시스템을 Home Assistant에 통합하는 프로젝트입니다.**
@@ -15,21 +18,50 @@
 - 현관문 열림, 닫힘 감지
 - HBM 로그 수신
 
-Raspberry Pi 환경에서 Docker로 구동 될 수 있도록 설계되었습니다.
+### Table of Content
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Configurations](#configurations)
 
-## Getting started
-Please see [netdaemon.xyz](https://netdaemon.xyz/docs/v3) for more information about getting starting developing apps for Home Assistant using NetDaemon.
+## Overview
+<img src="/img/diagram.png">
 
-Please add code generation features in `program.cs` when using code generation features by removing comments!
+LG HomNet 시스템을 통합하기 위하여 단지 서버에서 HomNet 서버로 들어가는 이더넷 패킷을 캡쳐한 데이터와, HomNet 서버와 단말 장치 사이의 LnCP (RS-485) 통신을 사용합니다.
 
-## Use the code generator
-See https://netdaemon.xyz/docs/v3/hass_model/hass_model_codegen
+이 프로젝트는 Raspberry PI 환경에서 Docker Container로 구동 가능하게 설계되었습니다. 
 
-## Issues
+또한 Home Assistant 서버와 통신하기 위하여 NetDaemon 4를 사용합니다.
 
-- If you have issues or suggestions of improvements to this template, please [add an issue](https://github.com/net-daemon/netdaemon-app-template)
-- If you have issues or suggestions of improvements to NetDaemon, please [add an issue](https://github.com/net-daemon/netdaemon/issues)
+>[!WARNING]
+>**이더넷 네트워크에 대한 직접적인 접근은 수행하지 않습니다.**
+>
+>제 3자 장치를 통해 단지 내 서버에 직접적으로 접근하는 경우, 예기치 못한 오류 및 법적인 문제가 발생 할 수 있습니다.
 
-## Discuss the NetDaemon
+아래 기능을 구현하기 위해 이더넷 캡쳐를 사용합니다:
+- 입차 알림
+- 공동 현관문 출입 요청 알림
+- 엘리베이터 위치 알림
+- 현관문 열림, 닫힘 감지
+- HBM 로그 수신
 
-Please [join the Discord server](https://discord.gg/K3xwfcX) to get support or if you want to contribute and help others.
+아래 기능을 구현하기 위해 LnCP 통신을 사용합니다:
+- 전등 제어
+- 엘리베이터 호출
+
+>[!NOTE]
+>**LnCP 통신 데이터와 HBM 로그를 보려면, appsettings.json의 Default LogLevel을 Debug로 설정하십시오.**
+## Dependencies
+- **Microsoft.Extensions.Hosting** - 8.0.0
+- **Microsoft.VisualStudio.Azure.Containers.Tools.Targets** - 1.20.1
+- **NetDaemon.AppModel** - 24.27.0
+- **NetDaemon.Client** - 24.27.0
+- **NetDaemon.Extensions.Logging** - 24.27.0
+- **NetDaemon.Extensions.Scheduling** - 24.27.0
+- **NetDaemon.Extensions.Tls** - 24.27.0
+- **NetDaemon.HassModel** - 24.27.0
+- **NetDaemon.Runtime** - 24.27.0
+- **Serilog.AspNetCore** - 8.0.1
+- **SharpPcap** - 6.3.0
+- **System.CommandLine.DragonFruit** - 0.4.0-alpha-22272.1
+- **System.IO.Ports** - 9.0.0-preview.5.24306.7
+- **System.Text.Encoding.CodePages** - 8.0.0
