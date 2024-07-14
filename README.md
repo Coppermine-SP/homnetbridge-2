@@ -1,7 +1,7 @@
-# Project template for binary deploy
-This is the project template for binary deploy. This allows you to build a binary package and deploy it to NetDaemon.
+# HomNetBridge-2
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"> <img src="https://img.shields.io/badge/ASP.NET-512BD4?style=for-the-badge&logo=blazor&logoColor=white">
 
-This is generated using NetDaemon runtime version 3.1 and .NET 7.
+LG HomNet 스마트 홈 시스템을 Home Assistant에 통합하는 프로젝트입니다.
 
 ## Getting started
 Please see [netdaemon.xyz](https://netdaemon.xyz/docs/v3) for more information about getting starting developing apps for Home Assistant using NetDaemon.
