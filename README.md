@@ -65,3 +65,11 @@ LG HomNet 시스템을 통합하기 위하여 단지 서버에서 HomNet 서버�
 - **System.CommandLine.DragonFruit** - 0.4.0-alpha-22272.1
 - **System.IO.Ports** - 9.0.0-preview.5.24306.7
 - **System.Text.Encoding.CodePages** - 8.0.0
+
+## Configurations
+**Docker Container를 통해 구동하거나, .NET 8.0 Runtime을 설치하여 직접 구동 할 수 있습니다.**
+
+> [!WARNING]
+> **LocalEthernetCapture을 사용하는 경우, tcpdump가 필요합니다.**
+> 
+> 프로젝트의 Dockerfile를 사용하는 경우, 자동으로 해당 의존성을 설치합니다.
