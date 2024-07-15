@@ -73,3 +73,100 @@ LG HomNet 시스템을 통합하기 위하여 단지 서버에서 HomNet 서버�
 > **LocalEthernetCapture을 사용하는 경우, tcpdump가 필요합니다.**
 > 
 > 프로젝트의 Dockerfile를 사용하는 경우, 자동으로 해당 의존성을 설치합니다.
+
+**환경 변수 또는 실행 인자로 아래의 옵션을 구성하십시오:**
+|환경 변수|실행 인자|설명|
+|---|---|---|
+|SERIAL_CLIENT|--serial|LnCP 통신에 사용할 클래스를 지정합니다.|
+|ETHERNET_CAPTURE|--ethernet|이더넷 캡쳐에 사용할 클래스를 지정합니다.|
+
+**시리얼 클라이언트 옵션**
+|환경 변수 값|실행 인자 값|설명|
+|---|---|---|
+|LOCAL|LocalSerialClient|LnCP 통신에 로컬 시리얼 장치를 사용합니다.|
+|REMOTE|RemoteSerialClient|LnCP 통신에 TCP 서버를 사용합니다. (EW11)|
+|NULL|NullSerialClient|LnCP 통신을 사용하지 않습니다.|
+
+**이더넷 캡쳐 옵션**
+|환경 변수 값|실행 인자 값|설명|
+|---|---|---|
+|LOCAL|LocalEthernetCapture|이더넷 캡쳐에 로컬 네트워크 인터페이스를 사용합니다.|
+|NULL|NulLEthernetCapture|이더넷 캡쳐를 사용하지 않습니다.|
+
+### Run as Docker Container
+docker-compose.yml 파일의 서비스에 아래와 같이 추가하십시오:
+```yml
+  homnetbridge:
+    build: "https://github.com/Coppermine-SP/homnetbridge-2.git#master:src"
+    volumes:
+      - ./volumes/homnetbridge/appsettings.json:/app/appsettings.json
+      - ./volumes/homnetbridge/apps:/app/apps
+    environment:
+      - "SERIAL_CLIENT=LOCAL"
+      - "ETHERNET_CAPTURE=LOCAL"
+    privileged: true
+    network_mode: host
+    restart: always
+```
+반드시 컨테이너는 호스트 장치에 접근 할 수 있도록 특권 모드(Privileged mode)로 실행되어야 합니다. 또한 호스트 네트워크 인터페이스에 접근 할 수 있도록 network_mode를 host로 구성하십시오.
+
+환경 변수를 통해 옵션을 구성하고, /app/appsettings.json과 /app/apps 디렉터리를 마운트하십시오.
+
+---
+
+### Run Directly
+Self-Contained 옵션으로 프로젝트를 배포하고 실행하십시오.
+
+또는 Framework-Independent 옵션으로 배포한 경우, 호스트에 .NET 8.0 Runtime을 설치하십시오.
+
+> [!WARNING]
+> **반드시 root 권한으로 실행되어야 합니다.**
+> 
+> 시리얼 장치와 네트워크 인터페이스 접근에 root 권한을 요구합니다.
+---
+
+### Configure appsettings.json
+appsettings.json을 아래와 같이 구성하십시오. 사용하지 않는 클래스는 구성하지 않아도 됩니다.
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "[Information 또는 Debug]",
+      "Microsoft": "Warning"
+    }
+  },
+
+  "RemoteSerialClient": {
+    "Hostname": "[EW11 서버 주소]",
+    "Port": [EW11 서버 포트]
+  },
+
+  "LocalSerialClient":{
+    "InterfaceName": "[시리얼 장치 이름]"
+  },
+
+  "EthernetCapture": {
+    "CaptureInterface": "[캡쳐 할 네트워크 인터페이스]",
+    "CaptureFilter": "not broadcast and not multicast and not icmp and not arp",
+    "ReadTimeout": 1500,
+    "PacketVerbose": false
+  },
+
+  "ElevatorControl" : {
+    "ReferenceFloor": [기준 층],
+    "NotifyThreshold": [엘리베이터가 몆개의 층을 이동할 때 마다 알림을 발송할지 지정] 
+  },
+
+  "HomeAssistant": {
+    "Host": "[HA URL]",
+    "Port": [HA Port],
+    "Ssl": false,
+    "Token": "[HA Long-Lived Access Token]"
+  },
+
+   "NetDaemon": {
+        "ApplicationConfigurationFolder": "./apps"
+  }
+}
+
+```
