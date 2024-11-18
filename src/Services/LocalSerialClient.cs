@@ -76,7 +76,7 @@ namespace CloudInteractive.HomNetBridge.Services
                         _logger.LogWarning("Packet is too large, discard.");
                         _idx = 0;
                     }
-                    else _buf[_idx++] = b;
+                    else if(_idx != 0) _buf[_idx++] = b;
                 }
                 
             }

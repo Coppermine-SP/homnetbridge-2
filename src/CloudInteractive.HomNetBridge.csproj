@@ -8,6 +8,8 @@
         <RootNamespace>CloudInteractive.HomNetBridge</RootNamespace>
         <AssemblyName>HomNetBridge_2</AssemblyName>
         <Copyright>Coppermine-SP</Copyright>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>.</DockerfileContext>
     </PropertyGroup>
     
     <ItemGroup>
@@ -16,7 +18,7 @@
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </None>        
         <None Update="$(MSBuildProjectDir)appsettings.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </None>
         <None Update="$(MSBuildProjectDir)**\*.yaml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -28,6 +30,7 @@
     </Target>
         
     <ItemGroup>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
         <PackageReference Include="NetDaemon.AppModel" Version="24.27.0" />
         <PackageReference Include="NetDaemon.Runtime" Version="24.27.0" />
         <PackageReference Include="NetDaemon.HassModel" Version="24.27.0" />
@@ -38,6 +41,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
         <PackageReference Include="SharpPcap" Version="6.3.0" />
+        <PackageReference Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.22272.1" />
         <PackageReference Include="System.IO.Ports" Version="9.0.0-preview.5.24306.7" />
         <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
     </ItemGroup>
