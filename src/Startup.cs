@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Threading.Tasks;
+using CloudInteractive.HomNetBridge.Context;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetDaemon.Extensions.Logging;
@@ -105,7 +106,7 @@ namespace CloudInteractive.HomNetBridge
             }
 
             ConsoleOut(ConsoleOutType.Info, $"NetDaemon Startup..\n");
-
+            SQLitePCL.Batteries.Init();
             try
             {
                 await Host.CreateDefaultBuilder()
@@ -117,6 +118,7 @@ namespace CloudInteractive.HomNetBridge
                             services
                                 .AddSingleton(typeof(ISerialClient), serialClient)
                                 .AddSingleton(typeof(IEthernetCapture), ethernetCapture)
+                                .AddDbContext<ServerDbContext>()
                                 .AddAppsFromAssembly(Assembly.GetExecutingAssembly())
                                 .AddNetDaemonStateManager()
                                 .AddNetDaemonScheduler()
