@@ -17,6 +17,20 @@ public class GateControl : HomNetAppBase
     {
         _context = context;
         _dbContext = dbContext;
+        
+        Logger.LogInformation("Load previous car status..");
+        foreach (var x in _dbContext.Cars)
+        {
+            if (x.EntryStatus) Logger.LogInformation($"{x.LicensePlate}(#{x.Id}) => Entry");
+            else Logger.LogInformation($"{x.LicensePlate}(#{x.Id}) => Exit");
+            
+            
+            _context.CallService("python_script", "set_state", null, new
+            {
+                entity_id = x.HaEntityName,
+                state = x.EntryStatus ? "on" : "off"
+            });
+        }
     }
     
     private static string GetUrlParameter(string key, string value)
