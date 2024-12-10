@@ -23,8 +23,6 @@ public class GateControl : HomNetAppBase
         {
             if (x.EntryStatus) Logger.LogInformation($"{x.LicensePlate}(#{x.Id}) => Entry");
             else Logger.LogInformation($"{x.LicensePlate}(#{x.Id}) => Exit");
-            
-            
             _context.CallService("python_script", "set_state", null, new
             {
                 entity_id = x.HaEntityName,

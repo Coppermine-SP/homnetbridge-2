@@ -5,7 +5,7 @@ namespace CloudInteractive.HomNetBridge.Context;
 
 public class ServerDbContext : DbContext
 {
-    public DbSet<Car> Cars { get; }
+    public DbSet<Car> Cars { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options) => 
         options.UseSqlite(Environment.GetEnvironmentVariable("SQLITE_CONNECTION_STRING"));
