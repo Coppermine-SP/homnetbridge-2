@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
-ENV DOTNET_NUGET_SIGNATURE_VERIFICATION FALSE
+ARG DOTNET_NUGET_SIGNATURE_VERIFICATION=FALSE
 
 # Copy csproj and restore as distinct layers
 COPY *.csproj ./
