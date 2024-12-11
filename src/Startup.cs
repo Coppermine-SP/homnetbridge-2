@@ -82,8 +82,8 @@ namespace CloudInteractive.HomNetBridge
 
             if (serial is null)
             {
-                ConsoleOut(ConsoleOutType.Warning,"Parameter serial was not specified. Using LocalSerialClient as the default option.");
-                serialClient = typeof(LocalSerialClient);
+                ConsoleOut(ConsoleOutType.Warning,"Parameter serial was not specified. Using NullSerialClient as the default option.");
+                serialClient = typeof(NullSerialClient);
             }
             else
             {
@@ -95,8 +95,8 @@ namespace CloudInteractive.HomNetBridge
 
             if (ethernet is null)
             {
-                ConsoleOut(ConsoleOutType.Warning,"Parameter ethernet was not specified. Using LocalEthernetCapture as the default option.");
-                ethernetCapture = typeof(EthernetCapture);
+                ConsoleOut(ConsoleOutType.Warning,"Parameter ethernet was not specified. Using NullEthernetCapture as the default option.");
+                ethernetCapture = typeof(NullEthernetCapture);
             }
             else
             {
@@ -106,7 +106,6 @@ namespace CloudInteractive.HomNetBridge
             }
 
             ConsoleOut(ConsoleOutType.Info, $"NetDaemon Startup..\n");
-            SQLitePCL.Batteries.Init();
             try
             {
                 await Host.CreateDefaultBuilder()

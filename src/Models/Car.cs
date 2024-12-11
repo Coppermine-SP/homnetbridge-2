@@ -12,7 +12,7 @@ public class Car
     public string? LicensePlate { get; set; }
     
     [Required]
-    [StringLength(20)]
+    [StringLength(30)]
     public string? HaEntityName { get; set; }
     
     public bool EntryStatus { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -10,26 +11,24 @@ namespace CloudInteractive.HomNetBridge.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "Cars",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    LicensePlate = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
-                    HaEntityName = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
-                    EntryStatus = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    LicensePlate = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
+                    HaEntityName = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
+                    EntryStatus = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cars", x => x.Id);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cars_LicensePlate",
-                table: "Cars",
-                column: "LicensePlate",
-                unique: true);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
         }
 
         /// <inheritdoc />
