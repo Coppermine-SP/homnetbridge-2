@@ -21,8 +21,8 @@ public class GateControl : HomNetAppBase
         Logger.LogInformation("Load previous car status..");
         foreach (var x in _dbContext.Cars)
         {
-            if (x.EntryStatus) Logger.LogInformation($"{x.LicensePlate}(#{x.Id}) => Entry");
-            else Logger.LogInformation($"{x.LicensePlate}(#{x.Id}) => Exit");
+            if (x.EntryStatus) Logger.LogInformation($"{x.LicensePlate}(#{x.Id}, {x.HaEntityName}) => Entry");
+            else Logger.LogInformation($"{x.LicensePlate}(#{x.Id}, {x.HaEntityName}) => Exit");
             _context.CallService("python_script", "set_state", null, new
             {
                 entity_id = x.HaEntityName,
@@ -46,7 +46,7 @@ public class GateControl : HomNetAppBase
         string licenseNo = GetUrlParameter("info", content);
         
         Logger.LogInformation("GateEntry: " + licenseNo);
-        var model = _dbContext.Cars.FirstOrDefault(x => x.LicensePlate != null && x.LicensePlate.Equals(licenseNo));
+        var model = _dbContext.Cars.FirstOrDefault(x => x.LicensePlate != null && x.LicensePlate.Equals(licenseNo.Trim()));
 
         if (model is null)
         {
