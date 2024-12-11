@@ -38,7 +38,7 @@ LG HomNet 시스템을 통합하기 위하여 단지 서버에서 HomNet 서버�
 >제 3자 장치를 통해 단지 내 서버에 직접적으로 접근하는 경우, 예기치 못한 오류 및 법적인 문제가 발생 할 수 있습니다.
 
 아래 기능을 구현하기 위해 이더넷 캡쳐를 사용합니다:
-- 입차 알림
+- 입차, 출차 관리
 - 공동 현관문 출입 요청 알림
 - 엘리베이터 위치 알림
 - 현관문 열림, 닫힘 감지
@@ -74,6 +74,8 @@ LG HomNet 시스템을 통합하기 위하여 단지 서버에서 HomNet 서버�
 > 
 > 프로젝트의 Dockerfile를 사용하는 경우, 자동으로 해당 의존성을 설치합니다.
 
+
+### Environment Variables and Arguments
 **환경 변수 또는 실행 인자로 아래의 옵션을 구성하십시오:**
 |환경 변수|실행 인자|설명|
 |---|---|---|
@@ -92,6 +94,26 @@ LG HomNet 시스템을 통합하기 위하여 단지 서버에서 HomNet 서버�
 |---|---|---|
 |LOCAL|LocalEthernetCapture|이더넷 캡쳐에 로컬 네트워크 인터페이스를 사용합니다.|
 |NULL|NulLEthernetCapture|이더넷 캡쳐를 사용하지 않습니다.|
+
+**환경 변수로 아래의 옵션을 구성하십시오.**
+|환경 변수|설명|
+|---|---|
+|MYSQL_CONNECTION_STRING|MySQL Server Connection String|
+
+---
+
+### Configuring Database
+Entity Framework Tools를 이용하여 대상 서버에 최신 마이그레이션으로 Update-Database를 수행하십시오.
+
+**데이터를 아래 테이블 정의에 맞게 구성하십시오:**
+|Column|Type|Description|
+|---|---|---|
+|Id|int|고유 ID|
+|LicensePlate|varchar(20)|차량 번호|
+|HaEntityName|varchar(30)|Home Assistant 엔티티 이름|
+|EntryStaus|tinyint(1)|입차 상태|
+
+---
 
 ### Run as Docker Container
 docker-compose.yml 파일의 서비스에 아래와 같이 추가하십시오:
